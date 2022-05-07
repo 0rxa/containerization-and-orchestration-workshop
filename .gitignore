@@ -1,0 +1,6 @@
+*.ova
+**/.env
+**/.env-*
+**/kubeconfig
+postgres/data
+deployments
