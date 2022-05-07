@@ -1,6 +1,6 @@
 *.ova
 **/.env
 **/.env-*
-.kube
+.kube/*
 postgres/data
 deployments
