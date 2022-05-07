@@ -10,11 +10,12 @@ fi
 OVA=${OVA:-../coreos.ova}
 BUTANE=${BUTANE:-config.yml}
 IGNITION=${IGNITION:-config.ign}
+FORMAT=${FORMAT:-../.format}
 INSTALL_K3S_VERSION=${INSTALL_K3S_VERSION:-v1.23.6+k3s1}
 ADAPTER=$(ip route ls default | grep -Po '(?<= dev )(\S+)')
 
 
-envsubst < $BUTANE | butane --pretty --strict > $IGNITION
+envsubst "$(cat $FORMAT)" < $BUTANE | butane --pretty --strict > $IGNITION
 vboxmanage import --vsys 0 --vmname "$VM_NAME" "$OVA"
 vboxmanage guestproperty set "$VM_NAME" /Ignition/Config "$(cat $IGNITION)"
 vboxmanage modifyvm "$VM_NAME" --nic1 bridged --nictype1 82545EM --bridgeadapter1 "$ADAPTER"
