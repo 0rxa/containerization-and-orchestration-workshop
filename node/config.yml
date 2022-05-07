@@ -1,0 +1,54 @@
+variant: fcos
+version: 1.3.0
+systemd:
+  units:
+    - name: init-k3s.service
+      enabled: true
+      contents: |
+        [Unit]
+        After=multi-user.target
+        Requires=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/init-k3s.sh
+        RemainAfterExit=yes
+        StandardOutput=journal
+        StandardError=journal
+
+
+        [Install]
+        WantedBy=sysinit.target
+
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: $VM_NAME
+    - path: /usr/local/bin/init-k3s.sh
+      mode: 0755
+      contents:
+        inline: |+
+          #!/bin/bash
+
+          export INSTALL_K3S_VERSION='$INSTALL_K3S_VERSION'
+          export K3S_URL='$K3S_URL'
+          export K3S_TOKEN='$K3S_TOKEN'
+          export SOMEVAR='$SOMEVAR'
+          curl -sfL https://get.k3s.io | sh - > /var/log/k3s-init.log
+
+
+
+passwd:
+  users:
+    - name: core
+      password_hash: $y$j9T$65aLqhg0WAU6UyIrXh8zY.$36wR9etLkSRw2QJgsu1mNSI9xhHdTZumhcxdWpwa15.
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCgFcjyPV2Jzl4d+VlOs7jpy7Qwrb3MSewdKY7eKgE8wU122jq1uIXf528Tgc19lmzqcfbQLdzkMHz87OKbT3VSxF2QXRCoRqlvwGjRVm1/xVW2FpzJlhbly2tepDJp6oDHS9LlT+yyloyiWn8V5KvLr/J3rteuiXEf21cFUcY/M3eCVqCIIHHF05V6XUejHF7uJtgoRHUe7PG1okThSqvjOqTChuaS/GYI5dk71NDeJuYZgWvZhxTrt6vnrGVa3a4GWr6tcBtyC9TprwdoS6jfap8/5xDZZzJipY+8OTzMIb1ERJe607mo0jcrkzXbEOZCdnRgCphfJkouujHCQMXioiCD0BAGTnPqr9MJl7kbb+qiDvbj/9ViLsp67G26+fDhehEWxHbJZEz4TKNpQZuzCIdI4ol7I/RiGX7yg/mELFc7gdMG+c7W3lYwOCsNSkOAV2fh2VUUWMPpDvUwCm38M+B+Ck+KVKtPVn+okVLvcyOFtE8psHAxdihCCKQSFFlALpW64XPagQ9hePLRG851acJn7t65VXZ/yBaZjCccb0GPAtCwHp8slbfRo81CwU0kYXSINXzkKJ36FGHcpt+2ryAUY3+r715+iyngPLDVjWGMnpDt8zVGD1G2pbLE9gVUr9Dbuk7QYrYh/eMoPRPv3mUkFIbpFWe+HqU7ZGm/Pw== reiarifi
+
+
+
+
+
+
