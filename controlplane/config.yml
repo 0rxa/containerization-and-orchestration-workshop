@@ -32,12 +32,16 @@ storage:
         inline: |+
           #!/bin/bash
 
-          export INSTALL_K3S_EXEC='server --disable servicelb --kube-proxy-arg --ipvs-strict-arp'
+          export INSTALL_K3S_EXEC='server
+              --disable traefik
+              --disable servicelb
+              --node-taint=k3s-controlplane=true:NoExecute
+              --kube-proxy-arg ipvs-strict-arp'
           export K3S_DATASTORE_ENDPOINT='postgres://postgres:1234@10.10.0.110:5432/k3s?sslmode=disable'
 
           export INSTALL_K3S_VERSION='$INSTALL_K3S_VERSION'
           export K3S_URL='$K3S_URL'
-          export K3S_TOKEN='K3S_TOKEN'
+          export K3S_TOKEN='$K3S_TOKEN'
           curl -sfL https://get.k3s.io | sh - > /var/log/k3s-init.log
 
 
