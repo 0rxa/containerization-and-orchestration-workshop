@@ -35,7 +35,6 @@ storage:
           export INSTALL_K3S_VERSION='$INSTALL_K3S_VERSION'
           export K3S_URL='$K3S_URL'
           export K3S_TOKEN='$K3S_TOKEN'
-          export SOMEVAR='$SOMEVAR'
           curl -sfL https://get.k3s.io | sh - > /var/log/k3s-init.log
 
 
