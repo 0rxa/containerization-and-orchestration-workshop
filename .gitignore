@@ -2,5 +2,6 @@
 **/.env
 **/.env-*
 .kube/*
-postgres/data
+backing-services/postgres/data
+backing-services/nfs/exports
 deployments
