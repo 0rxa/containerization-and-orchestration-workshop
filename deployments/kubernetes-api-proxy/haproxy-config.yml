@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+  namespace: default
+data:
+  haproxy.cfg: |+
+    global
+      daemon
+      user haproxy
+      group haproxy
+      stats timeout 30s
+      log stdout format raw local0 info
+
+    defaults
+      log global
+      mode tcp
+      timeout connect 5000
+      timeout client 50000
+      timeout server 50000
+
+    frontend kubernetes-api
+      bind *:443
+      default_backend kubernetes-api
+
+    backend kubernetes-api
+      server kubernetes-api 10.43.0.1:443
+
+
