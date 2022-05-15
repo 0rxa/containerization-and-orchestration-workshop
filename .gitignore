@@ -4,4 +4,3 @@
 .kube/*
 backing-services/postgres/data
 backing-services/nfs/exports
-deployments

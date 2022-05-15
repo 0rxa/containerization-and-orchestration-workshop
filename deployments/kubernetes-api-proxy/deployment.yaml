@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-api-proxy
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kubernetes-api-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubernetes-api-proxy
+    spec:
+      tolerations:
+      - key: "k3s-controlplane"
+        operator: "Equal"
+        value: "true"
+        effect: "NoExecute"
+      volumes:
+      - name: config
+        configMap:
+          name: haproxy-config
+      containers:
+      - name: haproxy
+        image: haproxytech/haproxy-alpine
+        volumeMounts:
+        - name: config
+          mountPath: "/usr/local/etc/haproxy/haproxy.cfg"
+          subPath: "haproxy.cfg"
+          readOnly: true
+        ports:
+        - containerPort: 443
+
+
