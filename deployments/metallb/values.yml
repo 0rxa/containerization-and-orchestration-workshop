@@ -26,7 +26,7 @@ configInline:
   - name: default
     protocol: layer2
     addresses:
-    - a.b.c.d/e # Arbitrary address space
+    - 10.10.0.20-10.10.0.30 # Arbitrary address space
 
 rbac:
   # create specifies whether to install and use RBAC rules.
