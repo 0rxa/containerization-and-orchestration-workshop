@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+    component: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+      component: webserver
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+        component: webserver
+    spec:
+      volumes:
+      - name: webroot
+        persistentVolumeClaim:
+          claimName: nextcloud-webroot
+      containers:
+      - name: nextcloud
+        image: nextcloud:22-apache
+        ports:
+        - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: nextcloud-env
+        - secretRef:
+            name: database-env
+        volumeMounts:
+        - name: webroot
+          mountPath: /var/www/html
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+    component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+      component: database
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+        component: database
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: database-data
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+        envFrom:
+        - secretRef:
+            name: database-env
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+
