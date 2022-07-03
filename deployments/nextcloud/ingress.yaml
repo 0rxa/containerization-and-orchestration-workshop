@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: nextcloud
   namespace: nextcloud
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 1000m
 spec:
   rules:
   - host: nextcloud.k8s-workshop.tk
